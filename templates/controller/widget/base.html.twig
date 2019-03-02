@@ -1,0 +1,26 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/fontawesome.css">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/solid.css">
+    <script src="/vendor/jquery/jquery-3.3.1.min.js"></script>
+    <title>Remote control Widget</title>
+    <style>
+        .rc-button {
+            width: 25px;
+        }
+
+        .rc-title {
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+    {% block javascript_begin %}{% endblock %}
+</head>
+<body>
+    <div class="container" style="max-width: 200px;">
+        {% block content %}{% endblock %}
+    </div>
+{% block javascript_end %}{% endblock %}
+</body>
+</html>

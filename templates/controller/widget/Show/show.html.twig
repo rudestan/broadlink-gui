@@ -1,0 +1,35 @@
+{% extends 'controller/widget/base.html.twig' %}
+
+{% block content %}
+    {% for remote in remotes %}
+        <div class="row">
+            <div class="row">
+                <div class="col-sm" style="padding-bottom: 4px;">
+                    <span class="rc-title">{{ remote.name }}</span>
+                </div>
+            </div>
+            <div class="row{% if remote.commands|length == 1 %} col-12{% endif %}  align-content-lg-center">
+                {% for command in remote.commands %}
+                    <div class="col-4" style="padding-top: 10px;">
+                        <div class="btn {% if command.color_class != null %}{{ command.color_class }}{% else %}btn-secondary{% endif %} rc-command" data-rc="{{ remote.id }}" data-cmd="{{ command.id }}">
+                            {% if command.icon_class != null %}
+                                <i class="rc-button fas {{ command.icon_class -}}"></i>
+                            {% else %}
+                                <span class="rc-button">{{ command.name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if loop.last == false %}
+            <div class="row">
+                <hr style="border: 1px dashed; border-color: #5a6268;width: 100%;">
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block javascript_end %}
+    <script src="/js/rc.js" type="application/javascript"></script>
+{% endblock %}
