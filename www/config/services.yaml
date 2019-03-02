@@ -26,7 +26,6 @@ services:
         autoconfigure: false
         parent: BRMControl\Service\AbstractDeviceStorage
 
-
     BRMControl\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']

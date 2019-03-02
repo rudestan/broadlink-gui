@@ -9,7 +9,8 @@ services:
       - php
     volumes:
       - ./docker/nginx:/etc/nginx/conf.d:ro
-      - ./www:/var/www
+      - ./www:/var/www/
+    container_name: broadlink-api-nginx
 
   php:
     build: docker/php
@@ -17,3 +18,6 @@ services:
     volumes:
       - ./www:/var/www
     mem_limit: 2000000000
+    container_name: broadlink-api-php
+    environment:
+      - APP_ENV=prod
