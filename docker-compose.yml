@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    links:
+      - php
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d:ro
+      - ./www:/var/www
+
+  php:
+    build: docker/php
+    working_dir: /var/www/
+    volumes:
+      - ./www:/var/www
+    mem_limit: 2000000000
