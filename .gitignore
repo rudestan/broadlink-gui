@@ -1,20 +1,20 @@
 
 ###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/public/bundles/
-/var/
-/vendor/
+/www/.env.local
+/www/.env.local.php
+/www/.env.*.local
+/www/public/bundles/
+/www/var/
+/www/vendor/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
-.phpunit
-/phpunit.xml
+/www/.phpunit
+/www/phpunit.xml
 ###< symfony/phpunit-bridge ###
 
 ###> symfony/web-server-bundle ###
-/.web-server-pid
+/www/.web-server-pid
 ###< symfony/web-server-bundle ###
 rmp_*.json
 .DS_Store

@@ -1,5 +1,0 @@
-.idea/
-/vendor/
-composer.lock
-.phplint-cache
-.DS_Store
