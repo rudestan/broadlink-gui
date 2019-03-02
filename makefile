@@ -1,5 +1,6 @@
 up:
 	docker-compose up -d
+	make cache_warmup
 
 down:
 	docker-compose down
@@ -16,3 +17,6 @@ pull:
 
 composer:
 	docker exec -it broadlink-api-php composer install
+
+cache_warmup:
+	docker exec -it broadlink-api-php php bin/console cache:warmup

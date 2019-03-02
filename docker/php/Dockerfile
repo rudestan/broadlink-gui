@@ -20,5 +20,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install zip \
     && docker-php-ext-install sockets
 
+RUN usermod -u 1000 www-data
+RUN sed -i "s/listen =.*/listen = 0.0.0.0:9000/" /usr/local/etc/php-fpm.d/www.conf \
+    && mkdir -p /var/run/php
+
 COPY php.ini        /usr/local/etc/php/conf.d/
-COPY default.conf    /usr/local/etc/php-fpm.d/www.conf
