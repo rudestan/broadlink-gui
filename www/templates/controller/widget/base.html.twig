@@ -11,14 +11,43 @@
         }
 
         .rc-title {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
+        }
+
+        .btn-remote {
+            height: 35px;
+            padding:2px;
+            padding-top:9px;
+            width: 35px;
+            min-width: 35px;
+        }
+
+        .tab-btn {
+            height: 36px;
+            padding:2px;
+            padding-top:8px;
+            width: 100%;
+            border-radius: 0;
+            background-color: #000000;
+            color: #FFFFFF;
+            border: 0;
+        }
+
+        .tab-btn-active {
+            background-color: #e2e2e2;
+            color: #000000;
+            border: 0;
+        }
+
+        .tab-hidden {
+            display: none;
         }
     </style>
     {% block javascript_begin %}{% endblock %}
 </head>
 <body>
-    <div class="container" style="max-width: 200px;">
+    <div class="container" style="min-width: 500px;height: 100%;">
         {% block content %}{% endblock %}
     </div>
 {% block javascript_end %}{% endblock %}

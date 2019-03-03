@@ -5,6 +5,7 @@ namespace BRMControl\Controller;
 use BRMControl\Device\Command;
 use BRMControl\Device\Remote;
 use BRMControl\Device\RMPPlus;
+use BRMControl\Device\Scenario;
 use BRMControl\Service\DeviceReader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,12 +37,38 @@ class WidgetController extends AbstractController
         /** @var RMPPlus $device */
         $device = $devices->first();
 
+        return new Response(
+            $this->renderView(
+                'Controller/widget/Show/show.html.twig',
+                [
+                    'remotes' => $this->getRemotes($device),
+                    'scenarios' => $this->getScenarios($device),
+                ]
+            )
+        );
+    }
+
+    private function getScenarios(RMPPlus $device): array
+    {
+        $scenarios = [];
+
+        /** @var Scenario $scenario */
+        foreach ($device->getScenarios() as $scenario) {
+            $scenarios[] = [
+                'id' => $scenario->getId(),
+                'name' => $scenario->getName(),
+            ];
+        }
+
+        return $scenarios;
+    }
+
+    private function getRemotes(RMPPlus $device): array
+    {
         $remotesData = [];
 
-        $remotes = $device->getRemotes();
-
         /** @var Remote $remote */
-        foreach ($remotes as $remote) {
+        foreach ($device->getRemotes() as $remote) {
             $remoteItem = [
                 'name' => $remote->getName(),
                 'id' => $remote->getId(),
@@ -64,13 +91,6 @@ class WidgetController extends AbstractController
             $remotesData[] = $remoteItem;
         }
 
-        return new Response(
-            $this->renderView(
-                'Controller/widget/Show/show.html.twig',
-                [
-                    'remotes' => $remotesData,
-                ]
-            )
-        );
+        return $remotesData;
     }
 }

@@ -208,4 +208,16 @@ class RMPPlus
 
         return null;
     }
+
+    public function getScenarioById(string $id): ?Scenario
+    {
+        /** @var Scenario $scenario */
+        foreach ($this->getScenarios() as $scenario) {
+            if ($scenario->getId() === $id) {
+                return $scenario;
+            }
+        }
+
+        return null;
+    }
 }
