@@ -1,0 +1,30 @@
+{% extends 'Controller/widget/base.html.twig' %}
+
+{% block content %}
+    <div class="col-12" style="padding: 12px 6px 0 6px;">
+        <div class="row">
+            <div class="row">
+                <div class="col-12">
+                    <span class="rc-title">{{ name }}</span>
+                </div>
+            </div>
+            <div class="row col-12">
+                {% for command in commands %}
+                    <div class="col-1" style="padding-top: 10px;">
+                        <div class="btn btn-remote {% if command.color_class != null %}{{ command.color_class }}{% else %}btn-secondary{% endif %} rc-command" data-rc="{{ id }}" data-cmd="{{ command.id }}">
+                            {% if command.icon_class != null %}
+                                <i class="rc-button fas {{ command.icon_class -}}"></i>
+                            {% else %}
+                                <span class="rc-button">{{ command.name }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript_end %}
+    <script src="/js/rc.js" type="application/javascript"></script>
+{% endblock %}

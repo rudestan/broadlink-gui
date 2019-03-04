@@ -19,18 +19,3 @@ $('.rc-command').on('click', function () {
 $('.sc-command').on('click', function () {
     rc.runScenario($(this).data('sc'));
 });
-
-$('.tab-btn').on('click', function () {
-    $('.tab-btn').removeClass('tab-btn-active');
-    $(this).addClass('tab-btn-active');
-
-    var tabId = $(this).data('tab-id');
-
-    $('.tab-cnt').each(function () {
-        if ($(this).attr('id') === tabId) {
-            $(this).removeClass('tab-hidden');
-        } else {
-            $(this).addClass('tab-hidden');
-        }
-    });
-});

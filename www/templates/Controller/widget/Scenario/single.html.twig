@@ -1,0 +1,22 @@
+{% extends 'Controller/widget/base.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="row">
+            <div class="col-12">
+                <span class="rc-title">{{ name }}</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="col-1" style="padding-top: 10px;">
+                <div class="btn btn-remote btn-info sc-command" data-sc="{{ id }}">
+                    <i class="rc-button fas fa-bolt"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript_end %}
+    <script src="/js/rc.js" type="application/javascript"></script>
+{% endblock %}

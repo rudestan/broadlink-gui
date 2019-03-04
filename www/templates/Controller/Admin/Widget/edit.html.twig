@@ -1,0 +1,26 @@
+{% extends 'Controller/Admin/base.html.twig' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item">Widget</li>
+    <li class="breadcrumb-item active">Edit</li>
+{% endblock %}
+
+{% block content %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fas fa-chart-area"></i>Widget Preview
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4" style="border: 2px solid;border-color: #e0e0e0;border-radius: 8px;">
+                    <div style="padding: 8px;">
+                        {% include 'Controller/widget/partial/_all.html.twig' %}
+                    </div>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+    </div>
+{% endblock %}

@@ -6,6 +6,7 @@ use BRMControl\Device\Command;
 use BRMControl\Device\Remote;
 use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
+use BRMControl\Provider\WidgetViewProvider;
 use BRMControl\Service\DeviceReader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,77 +23,68 @@ class WidgetController extends AbstractController
      */
     private $deviceReader;
 
-    public function __construct(DeviceReader $deviceReader)
+    /**
+     * @var WidgetViewProvider
+     */
+    private $widgetViewProvider;
+
+    public function __construct(DeviceReader $deviceReader, WidgetViewProvider $widgetViewProvider)
     {
         $this->deviceReader = $deviceReader;
+        $this->widgetViewProvider = $widgetViewProvider;
     }
 
     /**
-     * @Route("/", name="widget_show")
+     * @Route("/all/{type}", name="widget_all")
      */
-    public function actionShow(Request $request): Response
+    public function actionAll(Request $request, ?string $type = null): Response
     {
-        $data = [
-            'remotes' => [],
-            'scenarios' => [],
-        ];
+        $data = $this->widgetViewProvider->getWidgetViewData($type);
 
+        return new Response($this->renderView('Controller/widget/All/all.html.twig', $data));
+    }
+
+    /**
+     * @Route("/remote/single/{remoteId}", name="widget_remote_single")
+     */
+    public function actionRemoteSingle(Request $request, string $remoteId): Response
+    {
         $devices = $this->deviceReader->readDevices();
+        $data = [];
 
         if ($devices->count() !== 0) {
             /** @var RMPPlus $device */
             $device = $devices->first();
 
-            $data['remotes'] = $this->getRemotes($device);
-            $data['scenarios'] = $this->getScenarios($device);
-        }
+            $remote = $device->getRemoteById($remoteId);
 
-        return new Response($this->renderView('Controller/widget/Show/show.html.twig', $data));
-    }
-
-    private function getScenarios(RMPPlus $device): array
-    {
-        $scenarios = [];
-
-        /** @var Scenario $scenario */
-        foreach ($device->getScenarios() as $scenario) {
-            $scenarios[] = [
-                'id' => $scenario->getId(),
-                'name' => $scenario->getName(),
-            ];
-        }
-
-        return $scenarios;
-    }
-
-    private function getRemotes(RMPPlus $device): array
-    {
-        $remotesData = [];
-
-        /** @var Remote $remote */
-        foreach ($device->getRemotes() as $remote) {
-            $remoteItem = [
-                'name' => $remote->getName(),
-                'id' => $remote->getId(),
-                'type' => 'remote',
-                'commands' => [],
-            ];
-
-            /** @var Command $command */
-            foreach ($remote->getCommands() as $command) {
-                $commandItem = [
-                    'id' => $command->getId(),
-                    'name' => $command->getName(),
-                    'icon_class' => $command->getIconClass(),
-                    'color_class' => $command->getColorClass(),
-                ];
-
-                $remoteItem['commands'][] = $commandItem;
+            if ($remote) {
+                $data = $this->widgetViewProvider->getRemoteViewData($remote);
             }
-
-            $remotesData[] = $remoteItem;
         }
 
-        return $remotesData;
+        return new Response($this->renderView('Controller/widget/Remote/single.html.twig', $data));
+    }
+
+    /**
+     * @Route("/scenario/single/{scenarioId}", name="widget_scenario_single")
+     */
+    public function actionScenarioSingle(Request $request, string $scenarioId): Response
+    {
+        $devices = $this->deviceReader->readDevices();
+        $data = [];
+
+        if ($devices->count() !== 0) {
+            /** @var RMPPlus $device */
+            $device = $devices->first();
+
+            $scenario = $device->getScenarioById($scenarioId);
+
+            if ($scenario) {
+                $data = $this->widgetViewProvider->getScenarioViewData($scenario);
+            }
+        }
+
+        return new Response($this->renderView('Controller/widget/Scenario/single.html.twig', $data));
     }
 }
