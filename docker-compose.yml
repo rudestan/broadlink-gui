@@ -4,7 +4,7 @@ services:
   nginx:
     image: nginx
     ports:
-      - 80:80
+      - 88:80
     links:
       - php
     volumes:

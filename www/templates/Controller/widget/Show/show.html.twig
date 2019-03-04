@@ -5,9 +5,13 @@
         <div class="col" style="background-color: #000000;min-width: 36px;padding: 8px 0 0 0;max-width: 56px;">
             <div class="row">
                 <div class="col text-center">
-                    <span class="btn btn-light tab-btn tab-btn-active" data-tab-id="tab-remotes">
+                    <div id="tab-btn-remotes"
+                         class="tab-btn tab-btn-active"
+                         data-tab-id="tab-remotes"
+                         onclick="rc.setActiveTab(this)"
+                    >
                         <i class="fas fa-calculator"></i>
-                    </span>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -17,14 +21,19 @@
             </div>
             <div class="row">
                 <div class="col text-center">
-                    <span class="btn btn-light tab-btn" data-tab-id="tab-scenarios">
+                    <div id="tab-btn-scenarios"
+                         class="tab-btn"
+                         data-tab-id="tab-scenarios"
+                         onclick="rc.setActiveTab(this)"
+                    >
                         <i class="fas fa-list-ol"></i>
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-11" style="padding: 12px 0 0 22px;">
             <div id="tab-remotes" class="tab-cnt">
+                This is The REMOTES TAB!
                 {% for remote in remotes %}
                     <div class="row">
                         <div class="row">
@@ -54,6 +63,7 @@
                 {% endfor %}
             </div>
             <div id="tab-scenarios" class="tab-cnt tab-hidden">
+                This is The SCENARIOS TAB!
                 {% for scenario in scenarios %}
                     <div class="row">
                         <div class="row">

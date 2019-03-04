@@ -1,18 +1,10 @@
-FROM php:7.2-fpm
-
-RUN apt-get update \
-    && apt-get install -y \
-        curl \
-        wget \
-        git
+FROM php:7.3-fpm-alpine
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN apt-get update && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libicu-dev \
+RUN apk add shadow \
+    icu-dev \
+    libzip-dev \
     && docker-php-ext-install iconv \
     && docker-php-ext-install mbstring \
     && docker-php-ext-install intl \

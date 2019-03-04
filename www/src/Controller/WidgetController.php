@@ -32,20 +32,22 @@ class WidgetController extends AbstractController
      */
     public function actionShow(Request $request): Response
     {
+        $data = [
+            'remotes' => [],
+            'scenarios' => [],
+        ];
+
         $devices = $this->deviceReader->readDevices();
 
-        /** @var RMPPlus $device */
-        $device = $devices->first();
+        if ($devices->count() !== 0) {
+            /** @var RMPPlus $device */
+            $device = $devices->first();
 
-        return new Response(
-            $this->renderView(
-                'Controller/widget/Show/show.html.twig',
-                [
-                    'remotes' => $this->getRemotes($device),
-                    'scenarios' => $this->getScenarios($device),
-                ]
-            )
-        );
+            $data['remotes'] = $this->getRemotes($device);
+            $data['scenarios'] = $this->getScenarios($device);
+        }
+
+        return new Response($this->renderView('Controller/widget/Show/show.html.twig', $data));
     }
 
     private function getScenarios(RMPPlus $device): array
