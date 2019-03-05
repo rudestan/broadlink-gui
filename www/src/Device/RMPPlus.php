@@ -1,15 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: devstan
- * Date: 2019-02-23
- * Time: 19:26
- */
 
 namespace BRMControl\Device;
 
 use BRMControl\Device\Traits\HashableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Exclude;
 
 class RMPPlus
 {
@@ -18,36 +14,43 @@ class RMPPlus
     private const DEVICE_PREFIX = 'RM Pro+ #';
 
     /**
+     * @Type("string")
      * @var string
      */
     private $id;
 
     /**
+     * @Type("string")
      * @var string
      */
     private $mac;
 
     /**
+     * @Type("string")
      * @var string
      */
     private $ip;
 
     /**
+     * @Type("string")
      * @var string|null
      */
     private $name;
 
     /**
+     * @Type("ArrayCollection<BRMControl\Device\Remote>")
      * @var ArrayCollection
      */
     private $remotes;
 
     /**
+     * @Type("ArrayCollection<BRMControl\Device\Scenario>")
      * @var ArrayCollection
      */
     private $scenarios;
 
     /**
+     * @Exclude
      * @var string|null
      */
     private $filename = null;
@@ -104,7 +107,7 @@ class RMPPlus
 
     public function addRemote(Remote $remote): void
     {
-        $this->remotes->set($remote->getId(), $remote);
+        $this->remotes->add($remote);
     }
 
     public function isRemoteExist(string $name): bool
@@ -125,7 +128,7 @@ class RMPPlus
     }
     public function addScenario(Scenario $scenario): void
     {
-        $this->scenarios->set($scenario->getId(), $scenario);
+        $this->scenarios->add($scenario);
     }
 
     public function isScenarioExist(string $name): bool
@@ -191,6 +194,42 @@ class RMPPlus
         foreach ($this->getRemotes() as $remote) {
             if ($remote->getId() === $id) {
                 return $remote;
+            }
+        }
+
+        return null;
+    }
+
+    public function getRemoteByCommandId(string $id): ?Remote
+    {
+        /** @var Remote $remote */
+        foreach ($this->getRemotes() as $remote) {
+            $command = $remote->getCommandById($id);
+
+            if ($command === null) {
+                continue;
+            }
+
+            if ($command->getId() === $id) {
+                return $remote;
+            }
+        }
+
+        return null;
+    }
+
+    public function getCommandById(string $id): ?Command
+    {
+        /** @var Remote $remote */
+        foreach ($this->getRemotes() as $remote) {
+            $command = $remote->getCommandById($id);
+
+            if ($command === null) {
+                continue;
+            }
+
+            if ($command->getId() === $id) {
+                return $command;
             }
         }
 

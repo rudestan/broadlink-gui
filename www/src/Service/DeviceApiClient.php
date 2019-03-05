@@ -65,7 +65,7 @@ class DeviceApiClient
 
     public function sendCommand(RMPPlus $device, Command $command)
     {
-        $commandCode = $this->commandCodeEncoder->decode($command->getIrCode());
+        $commandCode = $this->commandCodeEncoder->decode($command->getCode());
 
         $this->connect($device);
         $this->rmpDevice->sendCommand($commandCode);

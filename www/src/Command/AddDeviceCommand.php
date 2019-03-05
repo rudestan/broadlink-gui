@@ -2,13 +2,19 @@
 
 namespace BRMControl\Command;
 
+use BRMControl\Device\Command;
+use BRMControl\Device\Remote;
 use BRMControl\Device\RMPPlus;
+use BRMControl\Device\Scenario;
+use BRMControl\Device\ScenarioItem;
 use BRMControl\Exception\FileExistsException;
 use BRMControl\Factory\RMPPlusFactory;
+use BRMControl\Service\DeviceReader;
 use BRMControl\Service\DeviceWriter;
 use BroadlinkApi\Device\Authenticatable\RMDevice;
 use BroadlinkApi\Device\NetDevice;
 use BroadlinkApi\Exception\BroadlinkApiException;
+use BroadlinkApi\Service\DeviceFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -28,12 +34,18 @@ class AddDeviceCommand extends AbstractCommand
      */
     private $deviceWriter;
 
-    public function __construct(RMPPlusFactory $rmpPlusFactory, DeviceWriter $deviceWriter, $name = null)
+    /**
+     * @var DeviceReader
+     */
+    private $deviceReader;
+
+    public function __construct(RMPPlusFactory $rmpPlusFactory, DeviceWriter $deviceWriter, DeviceReader $deviceReader, $name = null)
     {
         parent::__construct($name);
 
         $this->rmpPlusFactory = $rmpPlusFactory;
         $this->deviceWriter = $deviceWriter;
+        $this->deviceReader = $deviceReader;
     }
 
     protected function configure()

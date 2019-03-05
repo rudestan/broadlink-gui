@@ -4,30 +4,34 @@ namespace BRMControl\Device;
 
 use BRMControl\Device\Traits\HashableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation\Type;
 
 class Scenario
 {
     use HashableTrait;
 
     /**
+     * @Type("string")
      * @var string
      */
     private $id;
 
     /**
+     * @Type("string")
      * @var string
      */
     private $name;
 
     /**
+     * @Type("ArrayCollection<BRMControl\Device\ScenarioItem>")
      * @var ArrayCollection
      */
     private $items;
 
-    public function __construct(string $name, ?string $id = null)
+    public function __construct(string $name)
     {
         $this->name = $name;
-        $this->id = $id ?? $this->generateHash($name);
+        $this->id = $this->generateHash($name);
         $this->items = new ArrayCollection();
     }
 

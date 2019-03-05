@@ -39,9 +39,7 @@ class DeviceReader extends AbstractDeviceStorage
         foreach ($deviceFiles as $deviceFile) {
             $device = $this->getDeviceFromFile($deviceFile);
 
-            if ($device !== null) {
-                $devices->set($device->getId(), $device);
-            }
+            $devices->set($device->getId(), $device);
         }
 
         return $devices;
@@ -62,13 +60,8 @@ class DeviceReader extends AbstractDeviceStorage
 
         $contents = $deviceFile->getContents();
 
-        $unserialized = $this->serializer->unserialize($contents);
-
-        if ($unserialized === null) {
-            return null;
-        }
-
-        $device = $this->rmpPlusFactory->createFromArray($unserialized);
+        /** @var RMPPlus $device */
+        $device = $this->serializer->deserialize($contents);
         $device->setFilename($deviceFile->getRealPath());
 
         return $device;

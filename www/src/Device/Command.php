@@ -3,48 +3,34 @@
 namespace BRMControl\Device;
 
 use BRMControl\Device\Traits\HashableTrait;
+use JMS\Serializer\Annotation\Type;
 
 class Command
 {
     use HashableTrait;
 
     /**
+     * @Type("string")
      * @var string
      */
     private $id;
 
     /**
+     * @Type("string")
      * @var string
      */
     private $name;
 
     /**
+     * @Type("string")
      * @var string
      */
-    private $irCode;
+    private $code;
 
-    /**
-     * @var string|null
-     */
-    private $iconClass;
-
-    /**
-     * @var string|null
-     */
-    private $colorClass;
-
-    public function __construct(
-        string $name,
-        string $irCode,
-        ?string $id = null,
-        ?string $iconClass = null,
-        ?string $colorClass = null
-    ) {
+    public function __construct(string $name, string $code) {
         $this->name = $name;
-        $this->irCode = $irCode;
-        $this->id = $id ?? $this->generateHash($name);
-        $this->iconClass = $iconClass;
-        $this->colorClass = $colorClass;
+        $this->code = $code;
+        $this->id = $this->generateHash($name .microtime());
     }
 
     public function getId(): string
@@ -57,18 +43,8 @@ class Command
         return $this->name;
     }
 
-    public function getIrCode(): string
+    public function getCode(): string
     {
-        return $this->irCode;
-    }
-
-    public function getIconClass(): ?string
-    {
-        return $this->iconClass;
-    }
-
-    public function getColorClass(): ?string
-    {
-        return $this->colorClass;
+        return $this->code;
     }
 }

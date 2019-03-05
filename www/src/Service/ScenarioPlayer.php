@@ -15,22 +15,12 @@ class ScenarioPlayer
     private $deviceApiClient;
 
     /**
-     * @var CommandProvider
-     */
-    private $commandProvider;
-
-    /**
      * @var CommandCodeEncoder
      */
     private $commandCodeEncoder;
 
-    public function __construct(
-        DeviceApiClient $deviceApiClient,
-        CommandProvider $commandProvider,
-        CommandCodeEncoder $commandCodeEncoder
-    ) {
+    public function __construct(DeviceApiClient $deviceApiClient, CommandCodeEncoder $commandCodeEncoder) {
         $this->deviceApiClient = $deviceApiClient;
-        $this->commandProvider = $commandProvider;
         $this->commandCodeEncoder = $commandCodeEncoder;
     }
 
@@ -50,16 +40,14 @@ class ScenarioPlayer
 
     public function playScenarioItem(RMPPlus $device, ScenarioItem $scenarioItem): ?Command
     {
-        $command = $this->commandProvider->getByIdAndRemoteId(
-            $device,
-            $scenarioItem->getCommandId(),
-            $scenarioItem->getRemoteId()
-        );
+        $command = $device->getCommandById($scenarioItem->getCommandId());
 
-        $this->deviceApiClient->sendCommand($device, $command);
+        if ($command) {
+            $this->deviceApiClient->sendCommand($device, $command);
 
-        if ($scenarioItem->getDelay() > 0 && $scenarioItem->getDelay() <= ScenarioItem::MAX_DELAY) {
-            sleep($scenarioItem->getDelay());
+            if ($scenarioItem->getDelay() > 0 && $scenarioItem->getDelay() <= ScenarioItem::MAX_DELAY) {
+                sleep($scenarioItem->getDelay());
+            }
         }
 
         return $command;

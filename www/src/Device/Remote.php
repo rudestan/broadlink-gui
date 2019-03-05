@@ -4,30 +4,34 @@ namespace BRMControl\Device;
 
 use BRMControl\Device\Traits\HashableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation\Type;
 
 class Remote
 {
     use HashableTrait;
 
     /**
+     * @Type("string")
      * @var string
      */
     private $id;
 
     /**
+     * @Type("string")
      * @var string
      */
     private $name;
 
     /**
+     * @Type("ArrayCollection<BRMControl\Device\Command>")
      * @var ArrayCollection
      */
     private $commands;
 
-    public function __construct(string $name, ?string $id = null)
+    public function __construct(string $name)
     {
         $this->name = $name;
-        $this->id = $id ?? $this->generateHash($name);
+        $this->id = $this->generateHash($name);
         $this->commands = new ArrayCollection();
     }
 
@@ -53,7 +57,7 @@ class Remote
 
     public function addCommand(Command $command): void
     {
-        $this->commands->set($command->getId(), $command);
+        $this->commands->add($command);
     }
 
     public function isCommandExist(string $name): bool

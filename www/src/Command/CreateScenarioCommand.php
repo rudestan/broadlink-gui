@@ -122,7 +122,7 @@ class CreateScenarioCommand extends AbstractCommand
 
         $delay = (float) $this->helper->ask($this->input, $this->output, $question);
 
-        $scenarioItem = new ScenarioItem($remote->getId(), $command->getId());
+        $scenarioItem = new ScenarioItem($command);
         $scenarioItem->setDelay($delay);
 
         $scenario->addScenarioItem($scenarioItem);

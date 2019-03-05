@@ -2,10 +2,12 @@
 
 namespace BRMControl\Device\Traits;
 
+use Ramsey\Uuid\Uuid;
+
 trait HashableTrait
 {
-    private function generateHash(string $str): string
+    private function generateHash(string $str, ?string $nameSpace = Uuid::NAMESPACE_OID): string
     {
-        return sha1($str);
+        return Uuid::uuid5($nameSpace, $str);
     }
 }

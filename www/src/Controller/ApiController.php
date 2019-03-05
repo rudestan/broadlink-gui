@@ -48,24 +48,17 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/command/send/{remoteId}/{commandId}", name="api_command_send")
+     * @Route("/command/send/{commandId}", name="api_command_send")
      */
-    public function actionRemote(Request $request, string $remoteId, string $commandId): JsonResponse
+    public function actionRemote(Request $request, string $commandId): JsonResponse
     {
         $devices = $this->deviceReader->readDevices();
 
         /** @var RMPPlus $device */
         $device = $devices->first();
 
-        /** @var Remote $remote */
-        $remote = $device->getRemoteById($remoteId);
-
-        if (!$remote) {
-            return new JsonResponse(['success' => false]);
-        }
-
-        /** @var Command $command */
-        $command = $remote->getCommandById($commandId);
+        /** @var Command $remote */
+        $command = $device->getCommandById($commandId);
 
         if (!$command) {
             return new JsonResponse(['success' => false]);

@@ -113,7 +113,7 @@ class PlayScenarioCommand extends AbstractCommand
         /** @var ScenarioItem $scenarioItem */
         foreach ($scenarioItems as $scenarioItem) {
             $step++;
-            $remote = $device->getRemoteById($scenarioItem->getRemoteId());
+            $remote = $device->getRemoteByCommandId($scenarioItem->getCommandId());
 
             $this->output->write(
                 sprintf(

@@ -13,6 +13,8 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "doctrine/collections": "^1.5",
+        "jms/serializer-bundle": "^3.1",
+        "ramsey/uuid": "^3.8",
         "rudestan/broadlink-api": "^1.0",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/console": "4.2.*",
