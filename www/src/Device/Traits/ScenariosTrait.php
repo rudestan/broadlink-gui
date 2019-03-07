@@ -24,7 +24,9 @@ trait ScenariosTrait
 
     public function addScenario(Scenario $scenario): void
     {
-        $this->scenarios->add($scenario);
+        if (!$this->getScenarioById($scenario->getId())) {
+            $this->scenarios->add($scenario);
+        }
     }
 
     public function isScenarioExist(string $name): bool

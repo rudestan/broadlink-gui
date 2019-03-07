@@ -13,7 +13,7 @@ use BRMControl\Device\Remote;
 use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
 use BRMControl\Service\DeviceApiClient;
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use BRMControl\Service\ScenarioPlayer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ApiController extends AbstractController
 {
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
     private $deviceReader;
 
@@ -40,7 +40,7 @@ class ApiController extends AbstractController
      */
     private $deviceApiClient;
 
-    public function __construct(DeviceReader $deviceReader, ScenarioPlayer $scenarioPlayer, DeviceApiClient $deviceApiClient)
+    public function __construct(DeviceStorageReader $deviceReader, ScenarioPlayer $scenarioPlayer, DeviceApiClient $deviceApiClient)
     {
         $this->deviceReader = $deviceReader;
         $this->scenarioPlayer = $scenarioPlayer;

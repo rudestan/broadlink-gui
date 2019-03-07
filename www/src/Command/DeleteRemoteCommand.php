@@ -4,7 +4,7 @@ namespace BRMControl\Command;
 
 use BRMControl\Command\Traits\QuestionChooseRemote;
 use BRMControl\Device\RMPPlus;
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use BRMControl\Service\DeviceStorageWriter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,7 +18,7 @@ class DeleteRemoteCommand extends AbstractCommand
     protected static $defaultName = 'rmproplus:remote:delete';
 
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
     protected $deviceReader;
 
@@ -27,7 +27,7 @@ class DeleteRemoteCommand extends AbstractCommand
      */
     protected $deviceWriter;
 
-    public function __construct(DeviceReader $deviceReader, DeviceStorageWriter $deviceWriter, $name = null)
+    public function __construct(DeviceStorageReader $deviceReader, DeviceStorageWriter $deviceWriter, $name = null)
     {
         parent::__construct($name);
 

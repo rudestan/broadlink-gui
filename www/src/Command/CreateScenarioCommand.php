@@ -8,7 +8,7 @@ use BRMControl\Command\Traits\SaveDeviceTrait;
 use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
 use BRMControl\Device\ScenarioItem;
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use BRMControl\Service\DeviceStorageWriter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,7 +25,7 @@ class CreateScenarioCommand extends AbstractCommand
     protected static $defaultName = 'rmproplus:scenario:create';
 
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
     protected $deviceReader;
 
@@ -34,7 +34,7 @@ class CreateScenarioCommand extends AbstractCommand
      */
     protected $deviceWriter;
 
-    public function __construct(DeviceReader $deviceReader, DeviceStorageWriter $deviceWriter, $name = null)
+    public function __construct(DeviceStorageReader $deviceReader, DeviceStorageWriter $deviceWriter, $name = null)
     {
         parent::__construct($name);
 

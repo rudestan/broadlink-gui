@@ -2,7 +2,7 @@
 
 namespace BRMControl\Provider;
 
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Command;
 use BRMControl\Device\Remote;
@@ -15,11 +15,11 @@ class WidgetViewProvider
     private const TYPE_SCENARIOS = 'scenarios';
 
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
     private $deviceReader;
 
-    public function __construct(DeviceReader $deviceReader)
+    public function __construct(DeviceStorageReader $deviceReader)
     {
         $this->deviceReader = $deviceReader;
     }

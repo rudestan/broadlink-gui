@@ -3,7 +3,7 @@
 namespace BRMControl\Controller;
 
 use BRMControl\Provider\WidgetViewProvider;
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminController extends AbstractController
 {
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
     private $deviceReader;
 
@@ -24,7 +24,7 @@ class AdminController extends AbstractController
      */
     private $widgetViewProvider;
 
-    public function __construct(DeviceReader $deviceReader, WidgetViewProvider $widgetViewProvider)
+    public function __construct(DeviceStorageReader $deviceReader, WidgetViewProvider $widgetViewProvider)
     {
         $this->deviceReader = $deviceReader;
         $this->widgetViewProvider = $widgetViewProvider;

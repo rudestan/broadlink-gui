@@ -9,7 +9,7 @@ use BRMControl\Command\Traits\SaveDeviceTrait;
 use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
 use BRMControl\Device\ScenarioItem;
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use BRMControl\Service\ScenarioPlayer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,7 +25,7 @@ class PlayScenarioCommand extends AbstractCommand
     protected static $defaultName = 'rmproplus:scenario:play';
 
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
     protected $deviceReader;
 
@@ -34,7 +34,7 @@ class PlayScenarioCommand extends AbstractCommand
      */
     protected $scenarioPlayer;
 
-    public function __construct(DeviceReader $deviceReader, ScenarioPlayer $scenarioPlayer, $name = null)
+    public function __construct(DeviceStorageReader $deviceReader, ScenarioPlayer $scenarioPlayer, $name = null)
     {
         parent::__construct($name);
 

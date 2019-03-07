@@ -9,7 +9,7 @@ use BRMControl\Device\Remote;
 use BRMControl\Device\RMPPlus;
 use BRMControl\Exception\DeviceAuthorizationException;
 use BRMControl\Service\DeviceApiClient;
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use BRMControl\Service\DeviceStorageWriter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,7 +35,7 @@ class LearnRemoteCommandCommand extends AbstractCommand
     private $deviceApiClient;
 
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
     private $deviceReader;
 
@@ -46,7 +46,7 @@ class LearnRemoteCommandCommand extends AbstractCommand
 
     public function __construct(
         DeviceApiClient $deviceApiClient,
-        DeviceReader $deviceReader,
+        DeviceStorageReader $deviceReader,
         DeviceStorageWriter $deviceWriter,
         $name = null
     ) {

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation\Type;
 use BRMControl\Device\Remote;
 use BRMControl\Device\Command;
+use JMS\Serializer\Annotation\PostDeserialize;
 
 class RMDevice extends AbstractDevice
 {
@@ -47,5 +48,17 @@ class RMDevice extends AbstractDevice
         }
 
         return null;
+    }
+
+    public function getCommands(): ArrayCollection
+    {
+        $commands = [];
+
+        /** @var Remote $remote */
+        foreach ($this->getRemotes() as $remote) {
+            $commands = array_merge($commands, $remote->getCommands()->toArray());
+        }
+
+        return new ArrayCollection($commands);
     }
 }

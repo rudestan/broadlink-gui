@@ -5,9 +5,11 @@ namespace BRMControl\Device;
 use BRMControl\Device\Traits\DevicesTrait;
 use BRMControl\Device\Traits\HashableTrait;
 use BRMControl\Device\Traits\ScenariosTrait;
+use BRMControl\Device\Type\AbstractDevice;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\Exclude;
+use JMS\Serializer\Annotation\PostDeserialize;
 
 class DeviceStorage
 {
@@ -76,5 +78,43 @@ class DeviceStorage
     public function setFilename(?string $filename): void
     {
         $this->filename = $filename;
+    }
+
+    /**
+     * @PostDeserialize
+     */
+    private function PostDeserialize(): void
+    {
+        /** @var Scenario $scenario */
+        foreach ($this->getScenarios() as $scenario) {
+            $this->bindCommandToScenarioItems($scenario->getItems());
+        }
+    }
+
+    private function bindCommandToScenarioItems(ArrayCollection $scenarioItems): void
+    {
+        /** @var ScenarioItem $scenarioItem */
+        foreach ($scenarioItems as $scenarioItem)
+        {
+            $command = $this->getCommandById($scenarioItem->getCommandId());
+
+            if ($command !== null) {
+                $scenarioItem->setCommand($command);
+            }
+        }
+    }
+
+    private function getCommandById(string $commandId): ?Command
+    {
+        /** @var AbstractDevice $device */
+        foreach ($this->getDevices() as $device) {
+            $command = $device->getCommandById($commandId);
+
+            if ($command !== null) {
+                return $command;
+            }
+        }
+
+        return null;
     }
 }

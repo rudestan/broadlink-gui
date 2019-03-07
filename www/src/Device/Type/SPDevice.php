@@ -6,6 +6,7 @@ use BRMControl\Device\Command;
 use BRMControl\Device\Traits\CommandsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\PostDeserialize;
 
 class SPDevice extends AbstractDevice
 {
@@ -54,5 +55,10 @@ class SPDevice extends AbstractDevice
         }
 
         return $commands;
+    }
+
+    public function getCommands(): ArrayCollection
+    {
+        return $this->commands;
     }
 }

@@ -16,6 +16,6 @@
 ###> symfony/web-server-bundle ###
 /www/.web-server-pid
 ###< symfony/web-server-bundle ###
-rmp_*.json
+/www/device/*
 .DS_Store
 .idea

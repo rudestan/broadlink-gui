@@ -4,6 +4,10 @@ namespace BRMControl\Device;
 
 use BRMControl\Device\Traits\HashableTrait;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Exclude;
+use JMS\Serializer\Annotation\Accessor;
+use JMS\Serializer\Annotation\VirtualProperty;
+use JMS\Serializer\Annotation\SerializedName;
 
 class ScenarioItem
 {
@@ -22,11 +26,18 @@ class ScenarioItem
     private $id;
 
     /**
-     * @var int
+     * @var string
      *
      * @Type("string")
      */
     private $commandId;
+
+    /**
+     * @var Command
+     *
+     * @Exclude
+     */
+    private $command;
 
     /**
      * @var float
@@ -38,7 +49,8 @@ class ScenarioItem
     public function __construct(Command $command)
     {
         $this->commandId = $command->getId();
-        $this->id = $this->generateHash($this->commandId);
+        $this->command = $command;
+        $this->id = $this->generateHash($this->command->getId());
     }
 
     public function getId(): string
@@ -49,6 +61,16 @@ class ScenarioItem
     public function getCommandId(): string
     {
         return $this->commandId;
+    }
+
+    public function getCommand(): Command
+    {
+        return $this->command;
+    }
+
+    public function setCommand(Command $command): void
+    {
+        $this->command = $command;
     }
 
     public function getDelay(): float

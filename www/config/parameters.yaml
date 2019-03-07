@@ -1,3 +1,3 @@
 parameters:
   devices_dir: '%kernel.project_dir%/device/'
-  file_prefix: 'rmp_'
+  file_prefix: 'devicestorage_'

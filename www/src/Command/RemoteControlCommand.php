@@ -6,7 +6,7 @@ use BRMControl\Command\Traits\QuestionChooseRemote;
 use BRMControl\Device\Command;
 use BRMControl\Device\Remote;
 use BRMControl\Service\DeviceApiClient;
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,11 +26,11 @@ class RemoteControlCommand extends AbstractCommand
     protected $deviceApiClient;
 
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
     protected $deviceReader;
 
-    public function __construct(DeviceApiClient $deviceApiClient, DeviceReader $deviceReader, $name = null)
+    public function __construct(DeviceApiClient $deviceApiClient, DeviceStorageReader $deviceReader, $name = null)
     {
         $this->deviceApiClient = $deviceApiClient;
         $this->deviceReader = $deviceReader;

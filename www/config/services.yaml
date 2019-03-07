@@ -21,7 +21,7 @@ services:
         autoconfigure: false
         parent: BRMControl\Service\AbstractDeviceStorage
 
-    BRMControl\Service\DeviceReader:
+    BRMControl\Service\DeviceStorageReader:
         autowire: true
         autoconfigure: false
         parent: BRMControl\Service\AbstractDeviceStorage

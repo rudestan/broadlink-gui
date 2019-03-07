@@ -5,6 +5,7 @@ namespace BRMControl\Device;
 use BRMControl\Device\Traits\HashableTrait;
 use BRMControl\Device\Type\AbstractDevice;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Exclude;
 
 class Command
 {
@@ -18,11 +19,11 @@ class Command
     private $id;
 
     /**
-     * @var string
+     * @var AbstractDevice
      *
-     * @Type("string")
+     * @Exclude
      */
-    private $deviceId;
+    private $device;
 
     /**
      * @var string
@@ -40,20 +41,15 @@ class Command
 
     public function __construct(AbstractDevice $device, string $name, string $code)
     {
-        $this->deviceId = $device->getId();
+        $this->device = $device;
         $this->name = $name;
         $this->code = $code;
-        $this->id = $this->generateHash($name. $code);
+        $this->id = $this->generateHash($this->device->getId() . $code);
     }
 
     public function getId(): string
     {
         return $this->id;
-    }
-
-    public function getDeviceId(): string
-    {
-        return $this->deviceId;
     }
 
     public function getName(): string
@@ -64,5 +60,17 @@ class Command
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getDevice(): AbstractDevice
+    {
+        return $this->device;
+    }
+
+    public function setDevice(AbstractDevice $device): void
+    {
+        if (!$this->device) {
+            $this->device = $device;
+        }
     }
 }

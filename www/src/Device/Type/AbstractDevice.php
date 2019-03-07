@@ -3,8 +3,19 @@
 namespace BRMControl\Device\Type;
 
 use BRMControl\Device\Traits\HashableTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\VirtualProperty;
+use JMS\Serializer\Annotation\Discriminator;
+use JMS\Serializer\Annotation\PostDeserialize;
+use BRMControl\Device\Command;
 
+/**
+ * @Discriminator(field = "type", disabled = false, map = {
+ *     "RM": "BRMControl\Device\Type\RMDevice",
+ *     "SP": "BRMControl\Device\Type\SPDevice"
+ * })
+ */
 abstract class AbstractDevice
 {
     use HashableTrait;
@@ -50,7 +61,7 @@ abstract class AbstractDevice
     {
         $this->ip = $ip;
         $this->mac = $mac;
-        $this->id = $this->generateHash($this->type. $mac);
+        $this->id = $this->generateHash($this->getType(). $mac);
         $this->name = $name ?? $this->getType() . ' #'. $this->id;
     }
 
@@ -85,4 +96,29 @@ abstract class AbstractDevice
     }
 
     abstract public function getType(): string;
+
+    abstract public function getCommands(): ArrayCollection;
+
+    public function getCommandById(string $commandId): ?Command
+    {
+        /** @var Command $command */
+        foreach ($this->getCommands() as $command) {
+            if ($command->getId() === $commandId) {
+                return $command;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @PostDeserialize
+     */
+    protected function postDeserialize(): void
+    {
+        /** @var Command $command */
+        foreach ($this->getCommands() as $command) {
+            $command->setDevice($this);
+        }
+    }
 }

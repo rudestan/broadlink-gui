@@ -8,7 +8,7 @@ use BRMControl\Device\Remote;
 use BRMControl\Device\Scenario;
 use BRMControl\Device\ScenarioItem;
 use BRMControl\Exception\FileExistsException;
-use BRMControl\Service\DeviceReader;
+use BRMControl\Service\DeviceStorageReader;
 use BRMControl\Service\DeviceStorageWriter;
 use BroadlinkApi\Device\Authenticatable\Rm\RMDevice;
 use BroadlinkApi\Device\Authenticatable\Sp\SPMiniOEM;
@@ -36,21 +36,21 @@ class AddDeviceCommand extends AbstractCommand
     private $deviceStorageWriter;
 
     /**
-     * @var DeviceReader
+     * @var DeviceStorageReader
      */
-    private $deviceReader;
+    private $deviceStorageReader;
 
     public function __construct(
         DeviceFactory $deviceFactory,
         DeviceStorageWriter $deviceStorageWriter,
-        DeviceReader $deviceReader,
+        DeviceStorageReader $deviceStorageReader,
         $name = null
     ) {
         parent::__construct($name);
 
         $this->deviceFactory = $deviceFactory;
         $this->deviceStorageWriter = $deviceStorageWriter;
-        $this->deviceReader = $deviceReader;
+        $this->deviceStorageReader = $deviceStorageReader;
     }
 
     protected function configure()
@@ -64,12 +64,24 @@ class AddDeviceCommand extends AbstractCommand
     {
         parent::execute($input, $output);
 
-        $mockRmDevice = new RMDevice('192.168.1.12', '72:34:45:23:43:234', null, 'Some name');
+
+
+        // Read
+
+        $t = $this->deviceStorageReader->readDeviceStorage();
+
+        dump($t);
+
+        die();
+
+        // Write
+
+/*        $mockRmDevice = new RMDevice('192.168.1.12', '72:34:45:23:43:234', null, 'Some name');
         $mockSpDevice = new SPMiniOEM('192.168.1.12', '72:34:44:21:43:234', null, 'Some other name');
 
         $deviceStorage = new DeviceStorage();
 
-        /** @var RMDeviceType $rmDevice */
+
         $rmDevice = $this->deviceFactory->create($mockRmDevice);
         $spDevice = $this->deviceFactory->create($mockSpDevice);
 
@@ -84,11 +96,20 @@ class AddDeviceCommand extends AbstractCommand
 
         $rmDevice->addRemote($remote);
 
-        dump($deviceStorage);
+
+        $scenario = new Scenario('Test scenario');
+        $scenarioItem = new ScenarioItem($command);
+        $scenarioItem->setDelay(0.5);
+        $scenario->addScenarioItem($scenarioItem);
+
+        $deviceStorage->addScenario($scenario);
 
         $this->deviceStorageWriter->saveNewDeviceStorage($deviceStorage);
 
-        die();
+        dump($deviceStorage);
+        die();*/
+
+
 
         $this->output->writeln('<process>Discovering Broadlink RM Pro + Devices...</process>');
 

@@ -18,7 +18,7 @@ trait CommandsTrait
         $this->commands = $commands;
     }
 
-    public function getCommands(): ?ArrayCollection
+    public function getCommands(): ArrayCollection
     {
         return $this->commands;
     }
