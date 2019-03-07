@@ -4,7 +4,6 @@ namespace BRMControl\Device;
 
 use BRMControl\Device\Traits\HashableTrait;
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\SerializedName;
 
 class ScenarioItem
 {
@@ -16,20 +15,23 @@ class ScenarioItem
     public const MAX_DELAY = 10;
 
     /**
-     * @Type("string")
      * @var string
+     *
+     * @Type("string")
      */
     private $id;
 
     /**
-     * @Type("string")
      * @var int
+     *
+     * @Type("string")
      */
     private $commandId;
 
     /**
-     * @Type("float")
      * @var float
+     *
+     * @Type("float")
      */
     private $delay = 0;
 

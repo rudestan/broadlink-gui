@@ -3,6 +3,7 @@
 namespace BRMControl\Device;
 
 use BRMControl\Device\Traits\HashableTrait;
+use BRMControl\Device\Type\AbstractDevice;
 use JMS\Serializer\Annotation\Type;
 
 class Command
@@ -10,32 +11,49 @@ class Command
     use HashableTrait;
 
     /**
-     * @Type("string")
      * @var string
+     *
+     * @Type("string")
      */
     private $id;
 
     /**
-     * @Type("string")
      * @var string
+     *
+     * @Type("string")
+     */
+    private $deviceId;
+
+    /**
+     * @var string
+     *
+     * @Type("string")
      */
     private $name;
 
     /**
-     * @Type("string")
      * @var string
+     *
+     * @Type("string")
      */
     private $code;
 
-    public function __construct(string $name, string $code) {
+    public function __construct(AbstractDevice $device, string $name, string $code)
+    {
+        $this->deviceId = $device->getId();
         $this->name = $name;
         $this->code = $code;
-        $this->id = $this->generateHash($name .microtime());
+        $this->id = $this->generateHash($name. $code);
     }
 
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getDeviceId(): string
+    {
+        return $this->deviceId;
     }
 
     public function getName(): string

@@ -3,18 +3,19 @@
 namespace BRMControl\Command;
 
 use BRMControl\Device\Command;
+use BRMControl\Device\DeviceStorage;
 use BRMControl\Device\Remote;
-use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
 use BRMControl\Device\ScenarioItem;
 use BRMControl\Exception\FileExistsException;
-use BRMControl\Factory\RMPPlusFactory;
 use BRMControl\Service\DeviceReader;
-use BRMControl\Service\DeviceWriter;
-use BroadlinkApi\Device\Authenticatable\RMDevice;
+use BRMControl\Service\DeviceStorageWriter;
+use BroadlinkApi\Device\Authenticatable\Rm\RMDevice;
+use BroadlinkApi\Device\Authenticatable\Sp\SPMiniOEM;
+use BRMControl\Device\Type\RMDevice as RMDeviceType;
 use BroadlinkApi\Device\NetDevice;
 use BroadlinkApi\Exception\BroadlinkApiException;
-use BroadlinkApi\Service\DeviceFactory;
+use BRMControl\Factory\DeviceFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -25,26 +26,30 @@ class AddDeviceCommand extends AbstractCommand
     protected static $defaultName = 'rmproplus:device:add';
 
     /**
-     * @var RMPPlusFactory
+     * @var DeviceFactory
      */
-    private $rmpPlusFactory;
+    private $deviceFactory;
 
     /**
-     * @var DeviceWriter
+     * @var DeviceStorageWriter
      */
-    private $deviceWriter;
+    private $deviceStorageWriter;
 
     /**
      * @var DeviceReader
      */
     private $deviceReader;
 
-    public function __construct(RMPPlusFactory $rmpPlusFactory, DeviceWriter $deviceWriter, DeviceReader $deviceReader, $name = null)
-    {
+    public function __construct(
+        DeviceFactory $deviceFactory,
+        DeviceStorageWriter $deviceStorageWriter,
+        DeviceReader $deviceReader,
+        $name = null
+    ) {
         parent::__construct($name);
 
-        $this->rmpPlusFactory = $rmpPlusFactory;
-        $this->deviceWriter = $deviceWriter;
+        $this->deviceFactory = $deviceFactory;
+        $this->deviceStorageWriter = $deviceStorageWriter;
         $this->deviceReader = $deviceReader;
     }
 
@@ -58,6 +63,32 @@ class AddDeviceCommand extends AbstractCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         parent::execute($input, $output);
+
+        $mockRmDevice = new RMDevice('192.168.1.12', '72:34:45:23:43:234', null, 'Some name');
+        $mockSpDevice = new SPMiniOEM('192.168.1.12', '72:34:44:21:43:234', null, 'Some other name');
+
+        $deviceStorage = new DeviceStorage();
+
+        /** @var RMDeviceType $rmDevice */
+        $rmDevice = $this->deviceFactory->create($mockRmDevice);
+        $spDevice = $this->deviceFactory->create($mockSpDevice);
+
+        $deviceStorage->addDevice($rmDevice);
+        $deviceStorage->addDevice($spDevice);
+
+
+        $command = new Command($rmDevice, 'Power On', '0x33,3x22,5x44');
+
+        $remote = new Remote('Samsung TV Remote');
+        $remote->addCommand($command);
+
+        $rmDevice->addRemote($remote);
+
+        dump($deviceStorage);
+
+        $this->deviceStorageWriter->saveNewDeviceStorage($deviceStorage);
+
+        die();
 
         $this->output->writeln('<process>Discovering Broadlink RM Pro + Devices...</process>');
 

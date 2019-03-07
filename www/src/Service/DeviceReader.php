@@ -2,8 +2,8 @@
 
 namespace BRMControl\Service;
 
-use BRMControl\Device\RMPPlus;
-use BRMControl\Factory\RMPPlusFactory;
+use BRMControl\Device\Device;
+use BRMControl\Factory\DeviceFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Finder\Finder;
 
@@ -15,20 +15,20 @@ class DeviceReader extends AbstractDeviceStorage
     private $finder;
 
     /**
-     * @var RMPPlusFactory
+     * @var DeviceFactory
      */
-    private $rmpPlusFactory;
+    private $deviceFactory;
 
     public function __construct(
-        DeviceSerializer $deviceSerializer,
-        RMPPlusFactory $rmpPlusFactory,
+        DeviceStorageSerializer $deviceSerializer,
+        DeviceFactory $deviceFactory,
         string $dir,
         string $prefix
     ) {
         parent::__construct($deviceSerializer, $dir, $prefix);
 
         $this->finder = new Finder();
-        $this->rmpPlusFactory = $rmpPlusFactory;
+        $this->deviceFactory = $deviceFactory;
     }
 
     public function readDevices(): ArrayCollection

@@ -16,7 +16,7 @@ services:
             $dir: '%devices_dir%'
             $prefix: '%file_prefix%'
 
-    BRMControl\Service\DeviceWriter:
+    BRMControl\Service\DeviceStorageWriter:
         autowire: true
         autoconfigure: false
         parent: BRMControl\Service\AbstractDeviceStorage

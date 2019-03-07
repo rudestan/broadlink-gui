@@ -10,7 +10,6 @@ use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
 use BRMControl\Device\ScenarioItem;
 use BRMControl\Service\DeviceReader;
-use BRMControl\Service\DeviceWriter;
 use BRMControl\Service\ScenarioPlayer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,11 +33,6 @@ class PlayScenarioCommand extends AbstractCommand
      * @var ScenarioPlayer
      */
     protected $scenarioPlayer;
-
-    /**
-     * @var DeviceWriter
-     */
-    protected $deviceWriter;
 
     public function __construct(DeviceReader $deviceReader, ScenarioPlayer $scenarioPlayer, $name = null)
     {

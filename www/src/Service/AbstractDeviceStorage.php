@@ -5,7 +5,7 @@ namespace BRMControl\Service;
 abstract class AbstractDeviceStorage
 {
     /**
-     * @var DeviceSerializer
+     * @var DeviceStorageSerializer
      */
     protected $serializer;
 
@@ -19,7 +19,7 @@ abstract class AbstractDeviceStorage
      */
     protected $prefix;
 
-    public function __construct(DeviceSerializer $serializer, string $dir, string $prefix)
+    public function __construct(DeviceStorageSerializer $serializer, string $dir, string $prefix)
     {
         $this->serializer = $serializer;
         $this->dir = $dir;

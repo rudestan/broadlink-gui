@@ -6,7 +6,7 @@ use BRMControl\Command\Traits\SaveDeviceTrait;
 use BRMControl\Device\Remote;
 use BRMControl\Device\RMPPlus;
 use BRMControl\Service\DeviceReader;
-use BRMControl\Service\DeviceWriter;
+use BRMControl\Service\DeviceStorageWriter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,11 +24,11 @@ class CreateRemoteCommand extends AbstractCommand
     private $deviceReader;
 
     /**
-     * @var DeviceWriter
+     * @var DeviceStorageWriter
      */
     private $deviceWriter;
 
-    public function __construct(DeviceReader $deviceReader, DeviceWriter $deviceWriter, $name = null)
+    public function __construct(DeviceReader $deviceReader, DeviceStorageWriter $deviceWriter, $name = null)
     {
         parent::__construct($name);
 

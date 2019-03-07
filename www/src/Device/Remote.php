@@ -2,6 +2,7 @@
 
 namespace BRMControl\Device;
 
+use BRMControl\Device\Traits\CommandsTrait;
 use BRMControl\Device\Traits\HashableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation\Type;
@@ -9,22 +10,26 @@ use JMS\Serializer\Annotation\Type;
 class Remote
 {
     use HashableTrait;
+    use CommandsTrait;
 
     /**
-     * @Type("string")
      * @var string
+     *
+     * @Type("string")
      */
     private $id;
 
     /**
-     * @Type("string")
      * @var string
+     *
+     * @Type("string")
      */
     private $name;
 
     /**
-     * @Type("ArrayCollection<BRMControl\Device\Command>")
      * @var ArrayCollection
+     *
+     * @Type("ArrayCollection<BRMControl\Device\Command>")
      */
     private $commands;
 
@@ -43,68 +48,5 @@ class Remote
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setCommands(ArrayCollection $commands): void
-    {
-        $this->commands = $commands;
-    }
-
-    public function getCommands(): ArrayCollection
-    {
-        return $this->commands;
-    }
-
-    public function addCommand(Command $command): void
-    {
-        $this->commands->add($command);
-    }
-
-    public function isCommandExist(string $name): bool
-    {
-        /** @var Command $command */
-        foreach ($this->getCommands() as $command) {
-            if ($command->getName() === $name) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function getCommandsWithNamesAsKeys(): array
-    {
-        $commands = [];
-
-        /** @var Command $command */
-        foreach ($this->getCommands() as $command) {
-            $commands[$command->getName()] = $command;
-        }
-
-        return $commands;
-    }
-
-    public function getCommandByName(string $name): ?Command
-    {
-        /** @var Command $command */
-        foreach ($this->getCommands() as $command) {
-            if ($command->getName() === $name) {
-                return $command;
-            }
-        }
-
-        return null;
-    }
-
-    public function getCommandById(string $id): ?Command
-    {
-        /** @var Command $command */
-        foreach ($this->getCommands() as $command) {
-            if ($command->getId() === $id) {
-                return $command;
-            }
-        }
-
-        return null;
     }
 }

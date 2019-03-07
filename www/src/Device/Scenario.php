@@ -11,20 +11,23 @@ class Scenario
     use HashableTrait;
 
     /**
-     * @Type("string")
      * @var string
+     *
+     * @Type("string")
      */
     private $id;
 
     /**
-     * @Type("string")
      * @var string
+     *
+     * @Type("string")
      */
     private $name;
 
     /**
-     * @Type("ArrayCollection<BRMControl\Device\ScenarioItem>")
      * @var ArrayCollection
+     *
+     * @Type("ArrayCollection<BRMControl\Device\ScenarioItem>")
      */
     private $items;
 

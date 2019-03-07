@@ -9,7 +9,7 @@ use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
 use BRMControl\Device\ScenarioItem;
 use BRMControl\Service\DeviceReader;
-use BRMControl\Service\DeviceWriter;
+use BRMControl\Service\DeviceStorageWriter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,11 +30,11 @@ class CreateScenarioCommand extends AbstractCommand
     protected $deviceReader;
 
     /**
-     * @var DeviceWriter
+     * @var DeviceStorageWriter
      */
     protected $deviceWriter;
 
-    public function __construct(DeviceReader $deviceReader, DeviceWriter $deviceWriter, $name = null)
+    public function __construct(DeviceReader $deviceReader, DeviceStorageWriter $deviceWriter, $name = null)
     {
         parent::__construct($name);
 
