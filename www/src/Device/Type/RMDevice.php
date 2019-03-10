@@ -20,9 +20,9 @@ class RMDevice extends AbstractDevice
      */
     private $remotes;
 
-    public function __construct(string $ip, string $mac, ?string $name = null)
+    public function __construct(string $ip, string $mac, int $internalId, ?string $name = null)
     {
-        parent::__construct($ip, $mac, $name);
+        parent::__construct($ip, $mac, $internalId, $name);
 
         $this->remotes = new ArrayCollection();
     }

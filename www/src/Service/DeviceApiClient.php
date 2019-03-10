@@ -2,77 +2,96 @@
 
 namespace BRMControl\Service;
 
-use BRMControl\Device\Command;
-use BRMControl\Device\RMPPlus;
-use BRMControl\Exception\DeviceAuthorizationException;
-use BroadlinkApi\Device\Authenticatable\RMDevice;
+use BRMControl\Device\Type\AbstractDevice;
+use BRMControl\Factory\BroadlinkDeviceFactory;
+use BRMControl\Factory\DeviceFactory;
+use BroadlinkApi\Device\AuthenticatableDeviceInterface;
+use BroadlinkApi\Device\IdentifiedDeviceInterface;
+use BroadlinkApi\Device\NetDevice;
+use BroadlinkApi\Exception\BroadlinkApiException;
+use BroadlinkApi\Exception\ProtocolException;
 
 class DeviceApiClient
 {
     /**
-     * @var RMDevice|null
+     * @var DeviceFactory
      */
-    private $rmpDevice = null;
+    private $deviceFactory;
 
     /**
-     * @var CommandCodeEncoder
+     * @var BroadlinkDeviceFactory
      */
-    private $commandCodeEncoder;
+    private $broadlinkDeviceFactory;
 
-    public function __construct(CommandCodeEncoder $commandCodeEncoder)
+    /**
+     * @var array
+     */
+    private $authDevicePool;
+
+    public function __construct(DeviceFactory $deviceFactory, BroadlinkDeviceFactory $broadlinkDeviceFactory)
     {
-        $this->commandCodeEncoder = $commandCodeEncoder;
+        $this->deviceFactory = $deviceFactory;
+        $this->broadlinkDeviceFactory = $broadlinkDeviceFactory;
     }
 
-    private function connect(RMPPlus $device): void
+    public function authenticate(AbstractDevice $device): bool
     {
-        if (!$this->rmpDevice instanceof RMDevice) {
-            $this->rmpDevice = new RMDevice($device->getIp(), $device->getMac());
+        $broadlinkDevice = $this->broadlinkDeviceFactory->create($device);
+
+        if (!$broadlinkDevice) {
+            return false;
         }
 
         try {
-            if (!$this->rmpDevice->isAuthenticated()) {
-                $this->rmpDevice->authenticate();
+            if($broadlinkDevice->authenticate()) {
+                // We need to keep pool of authorized device to be able to use them during commands and scenarios
+                $this->addDeviceToAuthPool($broadlinkDevice);
+
+                return true;
             }
-        } catch (\Exception $e) {
-            throw new DeviceAuthorizationException(
-                sprintf(
-                    'Failed to authorize the device "%s (ip: %s)". Please check whether it is online and discoverable.',
-                    $device->getName(),
-                    $device->getIp()
-                )
-            );
-        }
-    }
-
-    public function startLearning(RMPPlus $device): void
-    {
-        $this->connect($device);
-
-        $this->rmpDevice->enterLearning();
-    }
-
-    public function getLastLearnedCommand(): ?string
-    {
-        if (!$this->isInstantiated()) {
-            throw new \LogicException('Device is not instantiated.');
+        } catch (ProtocolException $e) {
         }
 
-        $lastLearnedCommand = $this->rmpDevice->getLearnedCommand();
-
-        return $lastLearnedCommand !== null ? $this->commandCodeEncoder->encode($lastLearnedCommand) : null;
+        return false;
     }
 
-    public function sendCommand(RMPPlus $device, Command $command)
+    public function discover(): array
     {
-        $commandCode = $this->commandCodeEncoder->decode($command->getCode());
+        $netDevice = new NetDevice();
 
-        $this->connect($device);
-        $this->rmpDevice->sendCommand($commandCode);
+        try {
+            $discoveredDevices = $netDevice->discover();
+
+            return $this->createDeviceFromDiscovered($discoveredDevices);
+        } catch (BroadlinkApiException $e) {
+        }
+
+        return [];
     }
 
-    private function isInstantiated(): bool
+    private function createDeviceFromDiscovered(array $discoveredDevices): array
     {
-        return $this->rmpDevice instanceof RMDevice;
+        $devices = [];
+
+        /** @var IdentifiedDeviceInterface|AuthenticatableDeviceInterface $discoveredDevice */
+        foreach ($discoveredDevices as $discoveredDevice) {
+            if ($discoveredDevice instanceof AuthenticatableDeviceInterface) {
+                $devices[] = $this->deviceFactory->create($discoveredDevice);
+            }
+        }
+
+        return $devices;
+    }
+
+    private function addDeviceToAuthPool(AuthenticatableDeviceInterface $device): void
+    {
+        $key = $this->getKey($device);
+
+        $this->authDevicePool[$key] = $device;
+    }
+
+    private function getKey($device): string
+    {
+        return sha1($device->getIp() . $device->getMac());
     }
 }

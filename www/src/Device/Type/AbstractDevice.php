@@ -13,7 +13,8 @@ use BRMControl\Device\Command;
 /**
  * @Discriminator(field = "type", disabled = false, map = {
  *     "RM": "BRMControl\Device\Type\RMDevice",
- *     "SP": "BRMControl\Device\Type\SPDevice"
+ *     "SP": "BRMControl\Device\Type\SPDevice",
+ *     "SC": "BRMControl\Device\Type\SCDevice"
  * })
  */
 abstract class AbstractDevice
@@ -21,12 +22,14 @@ abstract class AbstractDevice
     use HashableTrait;
 
     public const TYPE_RM = 'RM';
-
     public const TYPE_SP = 'SP';
+    public const TYPE_SC = 'SC';
+    public const TYPE_UNKNOWN = 'Unknown';
 
     public const SUPPORTED = [
         self::TYPE_RM,
         self::TYPE_SP,
+        self::TYPE_SC,
     ];
 
     /**
@@ -35,6 +38,13 @@ abstract class AbstractDevice
      * @Type("string")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @Type("int")
+     */
+    private $internalId;
 
     /**
      * @var string
@@ -57,10 +67,11 @@ abstract class AbstractDevice
      */
     private $name;
 
-    public function __construct(string $ip, string $mac, ?string $name = null)
+    public function __construct(string $ip, string $mac, int $internalId, ?string $name = null)
     {
         $this->ip = $ip;
         $this->mac = $mac;
+        $this->internalId = $internalId;
         $this->id = $this->generateHash($this->getType(). $mac);
         $this->name = $name ?? $this->getType() . ' #'. $this->id;
     }
@@ -73,6 +84,11 @@ abstract class AbstractDevice
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getInternalId(): int
+    {
+        return $this->internalId;
     }
 
     public function getMac(): string

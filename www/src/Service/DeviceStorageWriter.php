@@ -15,7 +15,7 @@ class DeviceStorageWriter extends AbstractDeviceStorage
             throw new FileExistsException(sprintf('File "%s" already exists!', $fileName));
         }*/
 
-        $res = $this->saveDeviceStorage($fileName, $deviceStorage);
+        $res = $this->saveDeviceStorage($deviceStorage, $fileName);
 
         if ($res) {
             $deviceStorage->setFilename($fileName);
@@ -24,9 +24,15 @@ class DeviceStorageWriter extends AbstractDeviceStorage
         return $res;
     }
 
-    public function saveDeviceStorage(string $fileName, DeviceStorage $deviceStorage): bool
+    public function saveDeviceStorage(DeviceStorage $deviceStorage, ?string $fileName = null): bool
     {
-        return file_put_contents($fileName, $this->serializer->serialize($deviceStorage)) !== false;
+        if ($fileName === null && $deviceStorage->getFilename() === null) {
+            return false;
+        }
+
+        $file = $fileName === null ? $deviceStorage->getFilename() : $fileName;
+
+        return file_put_contents($file, $this->serializer->serialize($deviceStorage)) !== false;
     }
 
     public function exists(DeviceStorage $deviceStorage): bool

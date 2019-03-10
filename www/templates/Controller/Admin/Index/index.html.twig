@@ -1,0 +1,19 @@
+{% extends 'Controller/Admin/base.html.twig' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active">Dashboard</li>
+{% endblock %}
+
+{% block content %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fas fa-chart-area"></i>Devices
+        </div>
+        <div class="card-body">
+            <div class="row">
+                Currently you have no devices stored. Please add new devices.
+            </div>
+        </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+    </div>
+{% endblock %}

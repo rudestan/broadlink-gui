@@ -40,8 +40,7 @@ class DeviceStorageReader extends AbstractDeviceStorage
             $deviceStorage = $this->getDeviceStorageFromFile($deviceStorageFile);
 
             if ($deviceStorage !== null) {
-                dump($deviceStorage);die();
-                //return $deviceStorage;
+                return $deviceStorage;
             }
         }
 

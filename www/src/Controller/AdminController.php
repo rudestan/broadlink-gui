@@ -35,7 +35,7 @@ class AdminController extends AbstractController
      */
     public function actionIndex(Request $request): Response
     {
-        return new Response($this->renderView('Controller/Admin/base.html.twig'));
+        return new Response($this->renderView('Controller/Admin/Index/index.html.twig'));
     }
 
     /**

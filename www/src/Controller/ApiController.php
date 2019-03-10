@@ -9,11 +9,15 @@
 namespace BRMControl\Controller;
 
 use BRMControl\Device\Command;
+use BRMControl\Device\DeviceStorage;
 use BRMControl\Device\Remote;
 use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
+use BRMControl\Device\Type\AbstractDevice;
+use BRMControl\Factory\DeviceFactory;
 use BRMControl\Service\DeviceApiClient;
 use BRMControl\Service\DeviceStorageReader;
+use BRMControl\Service\DeviceStorageWriter;
 use BRMControl\Service\ScenarioPlayer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,68 +30,129 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ApiController extends AbstractController
 {
     /**
-     * @var DeviceStorageReader
-     */
-    private $deviceReader;
-
-    /**
-     * @var ScenarioPlayer
-     */
-    private $scenarioPlayer;
-
-    /**
      * @var DeviceApiClient
      */
-    private $deviceApiClient;
+    private $deviceApiCLient;
 
-    public function __construct(DeviceStorageReader $deviceReader, ScenarioPlayer $scenarioPlayer, DeviceApiClient $deviceApiClient)
-    {
-        $this->deviceReader = $deviceReader;
-        $this->scenarioPlayer = $scenarioPlayer;
-        $this->deviceApiClient = $deviceApiClient;
+    /**
+     * @var DeviceFactory
+     */
+    private $deviceFactory;
+
+    /**
+     * @var DeviceStorageReader
+     */
+    private $deviceStorageReader;
+
+    /**
+     * @var DeviceStorageWriter
+     */
+    private $deviceStorageWriter;
+
+    public function __construct(
+        DeviceApiClient $deviceApiClient,
+        DeviceFactory $deviceFactory,
+        DeviceStorageReader $deviceStorageReader,
+        DeviceStorageWriter $deviceStorageWriter
+    ) {
+        $this->deviceApiCLient = $deviceApiClient;
+        $this->deviceFactory = $deviceFactory;
+        $this->deviceStorageReader = $deviceStorageReader;
+        $this->deviceStorageWriter = $deviceStorageWriter;
     }
 
     /**
-     * @Route("/command/send/{commandId}", name="api_command_send")
+     * @Route("/device/discover", name="api_device_discover")
      */
-    public function actionRemote(Request $request, string $commandId): JsonResponse
+    public function actionDiscover(): JsonResponse
     {
-        $devices = $this->deviceReader->readDevices();
+        $data = [
+            'devices' => []
+        ];
 
-        /** @var RMPPlus $device */
-        $device = $devices->first();
+        $devices = $this->deviceApiCLient->discover();
 
-        /** @var Command $remote */
-        $command = $device->getCommandById($commandId);
-
-        if (!$command) {
-            return new JsonResponse(['success' => false]);
+        /** @var AbstractDevice $device */
+        foreach ($devices as $device) {
+            $data['devices'][] = [
+                'id' => $device->getId(),
+                'internalId' => $device->getInternalId(),
+                'type' => $device->getType(),
+                'ip' => $device->getIp(),
+                'mac' => $device->getMac(),
+            ];
         }
 
-        $this->deviceApiClient->sendCommand($device, $command);
-
-        return new JsonResponse(['success' => true]);
+        return new JsonResponse($data);
     }
 
     /**
-     * @Route("/scenario/run/{scenarioId}", name="api_scenario_run")
+     * @Route("/device/authenticate", name="api_device_authenticate", methods={"POST"})
      */
-    public function actionScenario(Request $request, string $scenarioId): JsonResponse
+    public function actionAuthenticate(Request $request): JsonResponse
     {
-        $devices = $this->deviceReader->readDevices();
+        $data = [
+            'authenticated' => false,
+            'error' => 'Unknown error'
+        ];
 
-        /** @var RMPPlus $device */
-        $device = $devices->first();
+        $internalId = $request->get('internalId');
+        $ip = $request->get('ip');
+        $mac = $request->get('mac');
 
-        /** @var Scenario $scenario */
-        $scenario = $device->getScenarioById($scenarioId);
+        $device = $this->deviceFactory->createFromArgs($internalId, $ip, $mac);
 
-        if (!$scenario) {
-            return new JsonResponse(['success' => false]);
+        if (!$device) {
+            $data['error'] = 'Unknown device';
+
+            return new JsonResponse($data);
         }
 
-        $this->scenarioPlayer->playScenario($device, $scenario);
+        $data['authenticated'] = $this->deviceApiCLient->authenticate($device);
 
-        return new JsonResponse(['success' => true]);
+        if (!$data['authenticated']) {
+            $data['error'] = 'Failed to authenticate device';
+        } else {
+            $data['error'] = '';
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/device/add", name="api_device_add", methods={"POST"})
+     */
+    public function addDevice(Request $request): JsonResponse
+    {
+        $data = ['success' => false];
+
+        $name = $request->get('name');
+        $internalId = $request->get('internalId');
+        $ip = $request->get('ip');
+        $mac = $request->get('mac');
+
+        $device = $this->deviceFactory->createFromArgs($internalId, $ip, $mac, $name);
+
+        if (!$device) {
+            return new JsonResponse($data);
+        }
+
+        $deviceStorage = $this->deviceStorageReader->readDeviceStorage();
+
+        if ($deviceStorage === null) {
+            $deviceStorage = new DeviceStorage();
+
+            $deviceStorage->addDevice($device);
+
+            $data['success'] = $this->deviceStorageWriter->saveNewDeviceStorage($deviceStorage);
+        } else {
+            if(!$deviceStorage->isDeviceExist($device->getId())) {
+                $deviceStorage->addDevice($device);
+
+                $data['success'] = $this->deviceStorageWriter->saveDeviceStorage($deviceStorage);
+            }
+        }
+
+        return new JsonResponse($data);
     }
 }

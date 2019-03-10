@@ -19,7 +19,14 @@
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin.css" rel="stylesheet">
-
+    <style>
+        .device-authorized {
+            color: #34ce57;
+        }
+        .device-not-authorized {
+            color: #6c757d;
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -86,9 +93,8 @@
 <!-- Custom scripts for all pages-->
 <script src="/js/sb-admin.min.js"></script>
 
-<!-- Demo scripts for this page-->
-<script src="/js/demo/datatables-demo.js"></script>
-<script src="/js/demo/chart-area-demo.js"></script>
+<script src="/vendor/underscore/underscore-min.js"></script>
+{% block javascript_end %}{% endblock %}
 
 </body>
 

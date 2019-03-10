@@ -1,0 +1,102 @@
+{% extends 'Controller/Admin/base.html.twig' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active">Discover Devices</li>
+{% endblock %}
+
+{% block content %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fas fa-search-plus mr-1"></i>Discover
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 text-center" id="discovered-devices-container">
+
+                </div>
+            </div>
+            <hr>
+            <div class="row" style="padding-top: 10px;">
+                <div class="col-12 text-center">
+                    <button class="btn btn-primary" id="btn-discover-start">Discover<span id="discovering-time"></span></button>
+                    <button class="btn btn-secondary invisible" id="btn-discover-stop">Stop</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer small text-muted" id="discovery-status">
+            <div class="row">
+                <div class="col-11" id="discovered-count">
+                </div>
+                <div class="col-1 text-right" id="discovering-progress">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- templates -->
+    <script type="text/html" id="template-discovered-device">
+        <div class="card flex-row flex-wrap px-2 mb-3 p-2" id="device-card-<%- id %>">
+            <div class="card-block border-0">
+                <img src="<%- img %>" width="200px" height="200px" alt="">
+            </div>
+            <div class="card-block px-2 text-left w-50">
+                <h5 class="card-title">
+                    <i class="fas fa-fw <%- device_icon %> mr-1 align-self-center" id="discovered-icon-<%- id %>"
+                    ></i>
+                    <%- type %> Device (mac: <%- mac %>)
+                </h5>
+                <p class="card-text">
+                    <i class="fas fa-fw fa-network-wired mr-1 align-self-center"></i>
+                    <span class="font-weight-bold">IP Address:</span> <%- ip %><br>
+
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-fw fa-info-circle mr-1 align-self-center"></i>
+                        Click Authenticate to authenticate the device and add it.
+                    </div>
+                </p>
+                <div id="device-add-container-<%- id %>">
+                    <button class="btn btn-info" data-device-id="<%- id %>" data-device-info="<%- device_info %>" onclick="auth.authenticate(this);">Authenticate</button>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="template-device-add">
+        <div class="row">
+            <div class="col-2 pr-0">Device name:</div>
+            <div class="col-5 pr-0 pl-0">
+                <input type="text" class="form-control device-name">
+            </div>
+            <div class="col-5">
+                <button class="btn btn-success" data-device-id="<%- id %>" data-device-info="<%- device_info %>" onclick="auth.addDevice(this);">
+                    <i class="fa fa-plus"></i> Add
+                </button>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="template-tip-start-discover">
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-fw fa-info-circle mr-1 align-self-center"></i>
+            Start discovering to find and add Broadlink devices.
+        </div>
+    </script>
+
+    <script type="text/html" id="template-spinner-big">
+        <img src="/img/loading.gif" width="64px" height="64px">
+    </script>
+
+    <script type="text/html" id="template-discovering-progress">
+        Discovering... <img src="/img/loading.gif" width="16px" height="16px">
+    </script>
+
+    <script type="text/html" id="template-found-count">
+        <strong>Found: </strong><%- count %> device(s)
+    </script>
+
+{% endblock %}
+
+{% block javascript_end %}
+    <script src="/js/discover.js" type="application/javascript"></script>
+    <script src="/js/authenticate.js" type="application/javascript"></script>
+{% endblock %}
