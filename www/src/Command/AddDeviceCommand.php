@@ -10,10 +10,8 @@ use BRMControl\Device\ScenarioItem;
 use BRMControl\Exception\FileExistsException;
 use BRMControl\Service\DeviceStorageReader;
 use BRMControl\Service\DeviceStorageWriter;
-use BroadlinkApi\Command\SetupCommand;
 use BroadlinkApi\Device\Authenticatable\Rm\RMDevice;
 use BroadlinkApi\Device\Authenticatable\SC1Device;
-use BroadlinkApi\Device\Authenticatable\Sp\SPMiniOEM;
 use BRMControl\Device\Type\RMDevice as RMDeviceType;
 use BroadlinkApi\Device\NetDevice;
 use BroadlinkApi\Exception\BroadlinkApiException;
@@ -66,11 +64,6 @@ class AddDeviceCommand extends AbstractCommand
     {
         parent::execute($input, $output);
 
-        $dev = new NetDevice();
-
-        $dev->setup('RudeStan2.4', '38d70S20', SetupCommand::SECURITY_WPA2);
-
-        die();
         $devs = (new NetDevice())->discover();
 
         foreach ($devs as $device) {

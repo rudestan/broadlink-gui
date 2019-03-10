@@ -5,7 +5,8 @@ var auth = {
         device_icon: '#discovered-icon-'
     },
     templates: {
-        device_add: '#template-device-add'
+        device_add: '#template-device-add',
+        modal_success: '#template-modal-success'
     },
     icons: {
         authorized: 'fa-check-circle device-authorized',
@@ -69,10 +70,21 @@ var auth = {
                 dataType: "json",
                 method: "POST",
                 success: function (data) {
-                    console.log(data);
+                    if (data.success === true) {
+                        auth.addedSuccess(el);
+                    }
                 }
             });
         }
+    },
+    addedSuccess: function(el)
+    {
+        $(el).text('Edit');
+
+        this.showModal(this.templates.modal_success, {
+            'title': 'Device added/edited',
+            'body': 'Device was successfully added/edited! You can edit it\'s name if you want.'
+        });
     },
     appendDataWithTemplate: function(containerId, templateId, data, clear = false)
     {
@@ -83,5 +95,11 @@ var auth = {
         }
 
         $(containerId).append(template(data));
+    },
+    showModal: function (templateId, data)
+    {
+        var template = _.template($(templateId).html());
+
+        $(template(data)).modal();
     }
 };

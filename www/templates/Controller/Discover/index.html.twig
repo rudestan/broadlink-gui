@@ -33,6 +33,28 @@
         </div>
     </div>
 
+    <!-- modal: added -->
+    <script type="text/html" id="template-modal-success">
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">
+                            <i class="fas fa-fw fa-check-circle device-authorized mr-1 align-self-center" ></i>
+                            <%- title %>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="modal-body"><%- body %></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
     <!-- templates -->
     <script type="text/html" id="template-discovered-device">
         <div class="card flex-row flex-wrap px-2 mb-3 p-2" id="device-card-<%- id %>">

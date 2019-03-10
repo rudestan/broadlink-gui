@@ -17,16 +17,16 @@ class AdminController extends AbstractController
     /**
      * @var DeviceStorageReader
      */
-    private $deviceReader;
+    private $deviceStorageReader;
 
     /**
      * @var WidgetViewProvider
      */
     private $widgetViewProvider;
 
-    public function __construct(DeviceStorageReader $deviceReader, WidgetViewProvider $widgetViewProvider)
+    public function __construct(DeviceStorageReader $deviceStorageReader, WidgetViewProvider $widgetViewProvider)
     {
-        $this->deviceReader = $deviceReader;
+        $this->deviceStorageReader = $deviceStorageReader;
         $this->widgetViewProvider = $widgetViewProvider;
     }
 
@@ -35,7 +35,14 @@ class AdminController extends AbstractController
      */
     public function actionIndex(Request $request): Response
     {
-        return new Response($this->renderView('Controller/Admin/Index/index.html.twig'));
+        $deviceStorage = $this->deviceStorageReader->readDeviceStorage();
+
+        return new Response($this->renderView(
+            'Controller/Admin/Index/index.html.twig',
+            [
+                'deviceStorage' => $deviceStorage,
+            ])
+        );
     }
 
     /**

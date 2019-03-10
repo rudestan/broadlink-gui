@@ -11,7 +11,6 @@ namespace BRMControl\Controller;
 use BRMControl\Device\Command;
 use BRMControl\Device\DeviceStorage;
 use BRMControl\Device\Remote;
-use BRMControl\Device\RMPPlus;
 use BRMControl\Device\Scenario;
 use BRMControl\Device\Type\AbstractDevice;
 use BRMControl\Factory\DeviceFactory;
@@ -70,10 +69,16 @@ class ApiController extends AbstractController
             'devices' => []
         ];
 
+        $deviceStorage = $this->deviceStorageReader->readDeviceStorage();
         $devices = $this->deviceApiCLient->discover();
 
         /** @var AbstractDevice $device */
         foreach ($devices as $device) {
+
+            if ($deviceStorage !== null && $deviceStorage->isDeviceExist($device->getId())) {
+                continue;
+            }
+
             $data['devices'][] = [
                 'id' => $device->getId(),
                 'internalId' => $device->getInternalId(),
@@ -148,9 +153,12 @@ class ApiController extends AbstractController
         } else {
             if(!$deviceStorage->isDeviceExist($device->getId())) {
                 $deviceStorage->addDevice($device);
-
-                $data['success'] = $this->deviceStorageWriter->saveDeviceStorage($deviceStorage);
+            } else {
+                $existingDevice = $deviceStorage->getDeviceById($device->getId());
+                $existingDevice->setName($name);
             }
+
+            $data['success'] = $this->deviceStorageWriter->saveDeviceStorage($deviceStorage);
         }
 
         return new JsonResponse($data);
